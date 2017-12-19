@@ -6,7 +6,7 @@ type Set struct {
 }
 
 // Build new set.
-func NewSet(values ...int) *Set { return nil }
+func New(values ...int) *Set { return nil }
 
 // Convert set to string.
 func (s *Set) String() string { return "" }

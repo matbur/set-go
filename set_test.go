@@ -2,6 +2,8 @@ package set
 
 import "testing"
 
+func TestNew(t *testing.T) {}
+
 func TestSet_String(t *testing.T) {}
 
 func TestSet_Len(t *testing.T) {}
