@@ -6,7 +6,14 @@ type Set struct {
 }
 
 // Build new set.
-func New(values ...int) *Set { return nil }
+func New(values ...int) *Set {
+	set := make(map[int]struct{})
+	for _, v := range values {
+		set[v] = struct{}{}
+	}
+	s := Set{set}
+	return &s
+}
 
 // Convert set to string.
 func (s *Set) String() string { return "" }
