@@ -59,7 +59,10 @@ func (s *Set) String() string {
 }
 
 // Add new value to a set.
-func (s *Set) Add(value int) *Set { return nil }
+func (s *Set) Add(value int) *Set {
+	s.set[value] = struct{}{}
+	return s
+}
 
 // Check if set contains value.
 func (s *Set) IsIn(value int) bool { return false }

@@ -112,7 +112,26 @@ func TestSet_String(t *testing.T) {
 	}
 }
 
-func TestSet_Add(t *testing.T) {}
+func TestSet_Add(t *testing.T) {
+	for _, v := range []struct {
+		set   []int
+		value int
+		str   string
+	}{
+		{[]int{}, 7, "{7}"},
+		{[]int{1}, 7, "{1, 7}"},
+		{[]int{1, -2}, 1, "{-2, 1}"},
+		{[]int{10, 2, -1}, 7, "{-1, 2, 7, 10}"},
+		{[]int{10, 2, -1, -10}, 2, "{-10, -1, 2, 10}"},
+	} {
+		set, value, want := v.set, v.value, v.str
+		s := New(set...)
+		get := s.Copy().Add(value).String()
+		if get != want {
+			t.Errorf("NewSet(%v).Add(%v) == %v, want %v", set, value, get, want)
+		}
+	}
+}
 
 func TestSet_IsIn(t *testing.T) {}
 
