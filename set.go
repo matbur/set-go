@@ -1,6 +1,12 @@
 // Package set provides implementation of unordered collection of unique values.
 package set
 
+import (
+	"fmt"
+	"strings"
+	"sort"
+)
+
 type Set struct {
 	set map[int]struct{}
 }
@@ -15,17 +21,42 @@ func New(values ...int) *Set {
 	return &s
 }
 
-// Convert set to string.
-func (s *Set) String() string { return "" }
-
 // Get number of items in set.
-func (s *Set) Len() int { return 0 }
+func (s *Set) Len() int {
+	return len(s.set)
+}
 
-// Get rid of all values from set.
-func (s *Set) Clear() *Set { return nil }
+// Get rid of all set from set.
+func (s *Set) Clear() *Set {
+	s.set = make(map[int]struct{})
+	return s
+}
 
 // Make copy of set.
-func (s *Set) Copy() *Set { return nil }
+func (s *Set) Copy() *Set {
+	set := make(map[int]struct{})
+	for i := range s.set {
+		set[i] = struct{}{}
+	}
+	cp := Set{set}
+	return &cp
+}
+
+// Convert set to string.
+func (s *Set) String() string {
+	var tabInt []int
+	for i := range s.set {
+		tabInt = append(tabInt, i)
+	}
+	sort.Ints(tabInt)
+	var tabStr []string
+	for _, i := range tabInt {
+		tabStr = append(tabStr, fmt.Sprint(i))
+	}
+	inner := strings.Join(tabStr, ", ")
+	str := fmt.Sprintf("{%s}", inner)
+	return str
+}
 
 // Add new value to a set.
 func (s *Set) Add(value int) *Set { return nil }
