@@ -21,7 +21,7 @@ func TestNew(t *testing.T) {
 		s := New(set...)
 		get := s.set
 		if !reflect.DeepEqual(get, want) {
-			t.Errorf("NewSet(%v).set == %v, want %v", set, get, want)
+			t.Errorf("New(%v).set == %v, want %v", set, get, want)
 		}
 	}
 }
@@ -41,7 +41,7 @@ func TestSet_Len(t *testing.T) {
 		s := New(set...)
 		get := s.Len()
 		if get != want {
-			t.Errorf("NewSet(%v).Len() == %v, want %v", set, get, want)
+			t.Errorf("New(%v).Len() == %v, want %v", set, get, want)
 		}
 	}
 }
@@ -61,7 +61,7 @@ func TestSet_Clear(t *testing.T) {
 		s := New(set...)
 		get := s.Clear().set
 		if !reflect.DeepEqual(get, want) {
-			t.Errorf("NewSet(%v).Clear().set == %v, want %v", set, get, want)
+			t.Errorf("New(%v).Clear().set == %v, want %v", set, get, want)
 		}
 	}
 }
@@ -82,10 +82,10 @@ func TestSet_Copy(t *testing.T) {
 		addrS1 := fmt.Sprintf("%p", s1.set)
 		addrS2 := fmt.Sprintf("%p", s2.set)
 		if !reflect.DeepEqual(s1.set, s2.set) {
-			t.Errorf("NewSet(%v).Copy() = %v, want %v", set, s2.set, s1.set)
+			t.Errorf("New(%v).Copy() = %v, want %v", set, s2.set, s1.set)
 		}
 		if addrS1 == addrS2 {
-			t.Errorf("addr of NewSet(%v).Copy() == %v is the same as original", set, addrS1)
+			t.Errorf("addr of New(%v).Copy() == %v is the same as original", set, addrS1)
 		}
 	}
 }
@@ -107,7 +107,7 @@ func TestSet_String(t *testing.T) {
 		s := New(set...)
 		get := s.String()
 		if get != want {
-			t.Errorf("NewSet(%v).String() == %v, want %v", set, get, want)
+			t.Errorf("New(%v).String() == %v, want %v", set, get, want)
 		}
 	}
 }
@@ -128,7 +128,7 @@ func TestSet_Add(t *testing.T) {
 		s := New(set...)
 		get := s.Copy().Add(value).String()
 		if get != want {
-			t.Errorf("NewSet(%v).Add(%v) == %v, want %v", set, value, get, want)
+			t.Errorf("New(%v).Add(%v) == %v, want %v", set, value, get, want)
 		}
 	}
 }
