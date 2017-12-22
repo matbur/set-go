@@ -41,12 +41,11 @@ func (s *Set) Clear() *Set {
 
 // Make copy of set.
 func (s *Set) Copy() *Set {
-	set := make(map[int]struct{})
+	cp := New()
 	for i := range s.set {
-		set[i] = struct{}{}
+		cp.Add(i)
 	}
-	cp := Set{set}
-	return &cp
+	return cp
 }
 
 // Check if sets contains the same elements.
@@ -85,7 +84,7 @@ func (s *Set) IsIn(value int) bool {
 
 // Remove a value from a set.
 func (s *Set) Remove(value int) error {
-	if ok := s.IsIn(value); !ok {
+	if !s.IsIn(value) {
 		return errors.New("no such value in set")
 	}
 	delete(s.set, value)
@@ -102,14 +101,14 @@ func (s *Set) Pop() (int, error) {
 		value = i
 		break
 	}
-	delete(s.set, value)
+	s.Remove(value)
 	return value, nil
 }
 
 // Remove all elements of another set from this set.
 func (s *Set) Difference(other *Set) *Set {
 	for i := range other.set {
-		delete(s.set, i)
+		s.Remove(i)
 	}
 	return s
 }
@@ -117,8 +116,8 @@ func (s *Set) Difference(other *Set) *Set {
 // Update a set with the intersection of itself and another.
 func (s *Set) Intersection(other *Set) *Set {
 	for i := range s.set {
-		if ok := other.IsIn(i); !ok {
-			delete(s.set, i)
+		if !other.IsIn(i) {
+			s.Remove(i)
 		}
 	}
 	return s
@@ -127,7 +126,7 @@ func (s *Set) Intersection(other *Set) *Set {
 // Update a set with the union of itself and others.
 func (s *Set) Union(other *Set) *Set {
 	for i := range other.set {
-		s.set[i] = struct{}{}
+		s.Add(i)
 	}
 	return s
 }
@@ -142,20 +141,20 @@ func (s *Set) SymmetricDifference(other *Set) *Set {
 // Return True if two sets have a null intersection.
 func (s *Set) IsDisjoint(other *Set) bool {
 	intersection := s.Copy().Intersection(other)
-	isDisjoint := intersection.Equal(New())
+	isDisjoint := intersection.Empty()
 	return isDisjoint
 }
 
 // Report whether another set contains this set.
 func (s *Set) IsSubset(other *Set) bool {
 	difference := s.Copy().Difference(other)
-	isSubset := difference.Equal(New())
+	isSubset := difference.Empty()
 	return isSubset
 }
 
 // Report whether this set contains another set.
 func (s *Set) IsSuperset(other *Set) bool {
 	difference := other.Copy().Difference(s)
-	isSuperset := difference.Equal(New())
+	isSuperset := difference.Empty()
 	return isSuperset
 }
