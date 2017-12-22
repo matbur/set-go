@@ -6,6 +6,7 @@ import (
 	"strings"
 	"sort"
 	"errors"
+	"reflect"
 )
 
 type Set struct {
@@ -41,6 +42,12 @@ func (s *Set) Copy() *Set {
 	}
 	cp := Set{set}
 	return &cp
+}
+
+// Check if sets contains the same elements.
+func (s *Set) Equal(other *Set) bool {
+	isEqual := reflect.DeepEqual(s.set, other.set)
+	return isEqual
 }
 
 // Convert set to string.

@@ -91,6 +91,28 @@ func TestSet_Copy(t *testing.T) {
 	}
 }
 
+func TestSet_Equal(t *testing.T) {
+	for _, v := range []struct {
+		set1    []int
+		set2    []int
+		isEqual bool
+	}{
+		{[]int{}, []int{}, true},
+		{[]int{1}, []int{1}, true},
+		{[]int{1}, []int{7}, false},
+		{[]int{1, -2}, []int{1}, false},
+		{[]int{10, 2, -1}, []int{-1, 7}, false},
+		{[]int{2, -10}, []int{-10, 2}, true},
+	} {
+		set1, set2, want := v.set1, v.set2, v.isEqual
+		s := New(set1...)
+		get := s.Equal(New(set2...))
+		if get != want {
+			t.Errorf("New(%v).Equal(New(%v)) == %v, want %v", set1, set2, get, want)
+		}
+	}
+}
+
 func TestSet_String(t *testing.T) {
 	for _, v := range []struct {
 		set []int
