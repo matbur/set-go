@@ -65,7 +65,10 @@ func (s *Set) Add(value int) *Set {
 }
 
 // Check if set contains value.
-func (s *Set) IsIn(value int) bool { return false }
+func (s *Set) IsIn(value int) bool {
+	_, ok := s.set[value]
+	return ok
+}
 
 // Remove a value from a set.
 func (s *Set) Remove(value int) error { return nil }

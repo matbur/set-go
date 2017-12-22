@@ -133,7 +133,26 @@ func TestSet_Add(t *testing.T) {
 	}
 }
 
-func TestSet_IsIn(t *testing.T) {}
+func TestSet_IsIn(t *testing.T) {
+	for _, v := range []struct {
+		set   []int
+		value int
+		isIn  bool
+	}{
+		{[]int{}, 7, false},
+		{[]int{1}, 7, false},
+		{[]int{1, -2}, 1, true},
+		{[]int{10, 2, -1}, 7, false},
+		{[]int{10, 2, -1, -10}, 2, true},
+	} {
+		set, value, want := v.set, v.value, v.isIn
+		s := New(set...)
+		get := s.IsIn(value)
+		if get != want {
+			t.Errorf("New(%v).IsIn(%v) == %v, want %v", set, value, get, want)
+		}
+	}
+}
 
 func TestSet_Remove(t *testing.T) {}
 
