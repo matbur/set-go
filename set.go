@@ -149,4 +149,8 @@ func (s *Set) IsSubset(other *Set) bool {
 }
 
 // Report whether this set contains another set.
-func (s *Set) IsSuperset(other *Set) bool { return false }
+func (s *Set) IsSuperset(other *Set) bool {
+	difference := other.Copy().Difference(s)
+	isSuperset := difference.Equal(New())
+	return isSuperset
+}
