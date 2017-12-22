@@ -142,7 +142,11 @@ func (s *Set) IsDisjoint(other *Set) bool {
 }
 
 // Report whether another set contains this set.
-func (s *Set) IsSubset(other *Set) bool { return false }
+func (s *Set) IsSubset(other *Set) bool {
+	difference := s.Copy().Difference(other)
+	isSubset := difference.Equal(New())
+	return isSubset
+}
 
 // Report whether this set contains another set.
 func (s *Set) IsSuperset(other *Set) bool { return false }

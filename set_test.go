@@ -331,6 +331,26 @@ func TestSet_IsDisjoint(t *testing.T) {
 	}
 }
 
-func TestSet_IsSubset(t *testing.T) {}
+func TestSet_IsSubset(t *testing.T) {
+	for _, v := range []struct {
+		set1     []int
+		set2     []int
+		isSubset bool
+	}{
+		{[]int{}, []int{}, true},
+		{[]int{1}, []int{1}, true},
+		{[]int{1}, []int{7}, false},
+		{[]int{1, -2}, []int{1}, false},
+		{[]int{10, 2, -1}, []int{1, 7}, false},
+		{[]int{-10, 2}, []int{10, 2, -1, -10}, true},
+	} {
+		set1, set2, want := v.set1, v.set2, v.isSubset
+		s := New(set1...)
+		get := s.IsSubset(New(set2...))
+		if get != want {
+			t.Errorf("New(%v).IsSubset(New(%v)) == %v, want %v", set1, set2, get, want)
+		}
+	}
+}
 
 func TestSet_IsSuperset(t *testing.T) {}
