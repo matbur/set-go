@@ -28,6 +28,11 @@ func (s *Set) Len() int {
 	return len(s.set)
 }
 
+// Check if set is empty.
+func (s *Set) Empty() bool {
+	return s.Len() == 0
+}
+
 // Get rid of all set from set.
 func (s *Set) Clear() *Set {
 	s.set = make(map[int]struct{})

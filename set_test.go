@@ -47,6 +47,24 @@ func TestSet_Len(t *testing.T) {
 	}
 }
 
+func TestSet_Empty(t *testing.T) {
+	for _, v := range []struct {
+		set     []int
+		isEmpty bool
+	}{
+		{[]int{}, true},
+		{[]int{1}, false},
+		{[]int{-1, 2, -1}, false},
+	} {
+		set, want := v.set, v.isEmpty
+		s := New(set...)
+		get := s.Empty()
+		if get != want {
+			t.Errorf("New(%v).Empty() == %v, want %v", set, get, want)
+		}
+	}
+}
+
 func TestSet_Clear(t *testing.T) {
 	for _, v := range []struct {
 		set []int
