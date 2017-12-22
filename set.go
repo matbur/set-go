@@ -121,7 +121,11 @@ func (s *Set) Union(other *Set) *Set {
 }
 
 // Update a set with the symmetric difference of itself and another.
-func (s *Set) SymmetricDifference(other *Set) *Set { return nil }
+func (s *Set) SymmetricDifference(other *Set) *Set {
+	intersection := s.Copy().Intersection(other)
+	s.Union(other).Difference(intersection)
+	return s
+}
 
 // Return True if two sets have a null intersection.
 func (s *Set) IsDisjoint(other *Set) bool { return false }
