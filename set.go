@@ -95,7 +95,12 @@ func (s *Set) Pop() (int, error) {
 }
 
 // Remove all elements of another set from this set.
-func (s *Set) Difference(other *Set) *Set { return nil }
+func (s *Set) Difference(other *Set) *Set {
+	for i := range other.set {
+		delete(s.set, i)
+	}
+	return s
+}
 
 // Update a set with the intersection of itself and another.
 func (s *Set) Intersection(other *Set) *Set { return nil }
