@@ -103,7 +103,14 @@ func (s *Set) Difference(other *Set) *Set {
 }
 
 // Update a set with the intersection of itself and another.
-func (s *Set) Intersection(other *Set) *Set { return nil }
+func (s *Set) Intersection(other *Set) *Set {
+	for i := range s.set {
+		if ok := other.IsIn(i); !ok {
+			delete(s.set, i)
+		}
+	}
+	return s
+}
 
 // Update a set with the symmetric difference of itself and another.
 func (s *Set) SymmetricDifference(other *Set) *Set { return nil }
