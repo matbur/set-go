@@ -178,7 +178,26 @@ func TestSet_Remove(t *testing.T) {
 	}
 }
 
-func TestSet_Pop(t *testing.T) {}
+func TestSet_Pop(t *testing.T) {
+	err := "the map is empty"
+	for _, v := range []struct {
+		set []int
+		err error
+	}{
+		{[]int{}, errors.New(err)},
+		{[]int{1}, nil},
+		{[]int{1, -2}, nil},
+		{[]int{10, 2, -1}, nil},
+	} {
+		set, want := v.set, v.err
+		s := New(set...)
+		v, get := s.Pop()
+		if (get == nil || want == nil ) && get != want ||
+			get != nil && want != nil && get.Error() != want.Error() {
+			t.Errorf(`New(%v).Pop() == (%v, "%v"), want (x, "%v")`, set, v, get, want)
+		}
+	}
+}
 
 func TestSet_Difference(t *testing.T) {}
 

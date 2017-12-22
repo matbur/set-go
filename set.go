@@ -81,7 +81,18 @@ func (s *Set) Remove(value int) error {
 }
 
 // Remove and return a random set element.
-func (s *Set) Pop() (int, error) { return 0, nil }
+func (s *Set) Pop() (int, error) {
+	if s.Len() == 0 {
+		return 0, errors.New("the map is empty")
+	}
+	var value int
+	for i := range s.set {
+		value = i
+		break
+	}
+	delete(s.set, value)
+	return value, nil
+}
 
 // Remove all elements of another set from this set.
 func (s *Set) Difference(other *Set) *Set { return nil }
