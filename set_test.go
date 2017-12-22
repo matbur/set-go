@@ -4,6 +4,7 @@ import (
 	"testing"
 	"reflect"
 	"fmt"
+	"errors"
 )
 
 func TestNew(t *testing.T) {
@@ -154,7 +155,28 @@ func TestSet_IsIn(t *testing.T) {
 	}
 }
 
-func TestSet_Remove(t *testing.T) {}
+func TestSet_Remove(t *testing.T) {
+	err := "no such value in set"
+	for _, v := range []struct {
+		set   []int
+		value int
+		err   error
+	}{
+		{[]int{}, 7, errors.New(err)},
+		{[]int{1}, 7, errors.New(err)},
+		{[]int{1, -2}, 1, nil},
+		{[]int{10, 2, -1}, 7, errors.New(err)},
+		{[]int{10, 2, -1, -10}, 2, nil},
+	} {
+		set, value, want := v.set, v.value, v.err
+		s := New(set...)
+		get := s.Remove(value)
+		if (get == nil || want == nil ) && get != want ||
+			get != nil && want != nil && get.Error() != want.Error() {
+			t.Errorf(`New(%v).Remove(%v) == "%v", want "%v"`, set, value, get, want)
+		}
+	}
+}
 
 func TestSet_Pop(t *testing.T) {}
 

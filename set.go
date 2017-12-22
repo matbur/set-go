@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 	"sort"
+	"errors"
 )
 
 type Set struct {
@@ -71,7 +72,13 @@ func (s *Set) IsIn(value int) bool {
 }
 
 // Remove a value from a set.
-func (s *Set) Remove(value int) error { return nil }
+func (s *Set) Remove(value int) error {
+	if ok := s.IsIn(value); !ok {
+		return errors.New("no such value in set")
+	}
+	delete(s.set, value)
+	return nil
+}
 
 // Remove and return a random set element.
 func (s *Set) Pop() (int, error) { return 0, nil }
