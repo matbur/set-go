@@ -135,7 +135,11 @@ func (s *Set) SymmetricDifference(other *Set) *Set {
 }
 
 // Return True if two sets have a null intersection.
-func (s *Set) IsDisjoint(other *Set) bool { return false }
+func (s *Set) IsDisjoint(other *Set) bool {
+	intersection := s.Copy().Intersection(other)
+	isDisjoint := intersection.Equal(New())
+	return isDisjoint
+}
 
 // Report whether another set contains this set.
 func (s *Set) IsSubset(other *Set) bool { return false }
