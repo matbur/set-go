@@ -112,11 +112,16 @@ func (s *Set) Intersection(other *Set) *Set {
 	return s
 }
 
+// Update a set with the union of itself and others.
+func (s *Set) Union(other *Set) *Set {
+	for i := range other.set {
+		s.set[i] = struct{}{}
+	}
+	return s
+}
+
 // Update a set with the symmetric difference of itself and another.
 func (s *Set) SymmetricDifference(other *Set) *Set { return nil }
-
-// Update a set with the union of itself and others.
-func (s *Set) Union(other *Set) *Set { return nil }
 
 // Return True if two sets have a null intersection.
 func (s *Set) IsDisjoint(other *Set) bool { return false }

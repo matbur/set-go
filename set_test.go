@@ -243,9 +243,29 @@ func TestSet_Intersection(t *testing.T) {
 	}
 }
 
-func TestSet_SymmetricDifference(t *testing.T) {}
+func TestSet_Union(t *testing.T) {
+	for _, v := range []struct {
+		set1 []int
+		set2 []int
+		str  string
+	}{
+		{[]int{}, []int{}, "{}"},
+		{[]int{1}, []int{1}, "{1}"},
+		{[]int{1}, []int{7}, "{1, 7}"},
+		{[]int{1, -2}, []int{1}, "{-2, 1}"},
+		{[]int{10, 2, -1}, []int{-1, 7}, "{-1, 2, 7, 10}"},
+		{[]int{10, 2, -1, -10}, []int{-10, 2, 3}, "{-10, -1, 2, 3, 10}"},
+	} {
+		set1, set2, want := v.set1, v.set2, v.str
+		s := New(set1...)
+		get := s.Union(New(set2...)).String()
+		if get != want {
+			t.Errorf("New(%v).Union(New(%v)) == %v, want %v", set1, set2, get, want)
+		}
+	}
+}
 
-func TestSet_Union(t *testing.T) {}
+func TestSet_SymmetricDifference(t *testing.T) {}
 
 func TestSet_IsDisjoint(t *testing.T) {}
 
