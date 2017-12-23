@@ -1,10 +1,10 @@
 package set
 
 import (
-	"testing"
-	"reflect"
-	"fmt"
 	"errors"
+	"fmt"
+	"reflect"
+	"testing"
 )
 
 func TestNew(t *testing.T) {

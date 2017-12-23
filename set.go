@@ -2,11 +2,11 @@
 package set
 
 import (
-	"fmt"
-	"strings"
-	"sort"
 	"errors"
+	"fmt"
 	"reflect"
+	"sort"
+	"strings"
 )
 
 type Set struct {
