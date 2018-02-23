@@ -21,35 +21,33 @@ type Set struct {
 // New builds a new set.
 func New(values ...int) *Set {
 	set := make(map[int]struct{})
-	for _, v := range values {
-		set[v] = struct{}{}
-	}
 	s := Set{set}
+	s.Add(values...)
 	return &s
 }
 
 // Len gets number of items in set.
 func (s *Set) Len() int {
-	return len(s.set)
+	i := len(s.set)
+	return i
 }
 
 // Empty checks if set contains no elements.
 func (s *Set) Empty() bool {
-	return s.Len() == 0
+	b := s.Len() == 0
+	return b
 }
 
 // Clear gets rid of all set from set.
 func (s *Set) Clear() *Set {
-	s.set = make(map[int]struct{})
+	*s = *New()
 	return s
 }
 
 // Copy creates a new set with the same elements.
 func (s *Set) Copy() *Set {
-	cp := New()
-	for i := range s.set {
-		cp.Add(i)
-	}
+	slice := s.ToSlice()
+	cp := New(slice...)
 	return cp
 }
 
@@ -59,14 +57,20 @@ func (s *Set) Equal(other *Set) bool {
 	return isEqual
 }
 
-// String converts set to a string.
-func (s *Set) String() string {
-	var tabInt []int
+// ToSlice converts set to a slice of ints.
+func (s *Set) ToSlice() []int {
+	tabInt := make([]int, 0, s.Len())
 	for i := range s.set {
 		tabInt = append(tabInt, i)
 	}
+	return tabInt
+}
+
+// String converts set to a string.
+func (s *Set) String() string {
+	tabInt := s.ToSlice()
 	sort.Ints(tabInt)
-	var tabStr []string
+	tabStr := make([]string, 0, s.Len())
 	for _, i := range tabInt {
 		tabStr = append(tabStr, fmt.Sprint(i))
 	}
@@ -75,9 +79,11 @@ func (s *Set) String() string {
 	return str
 }
 
-// Add inserts new value to a set.
-func (s *Set) Add(value int) *Set {
-	s.set[value] = struct{}{}
+// Add inserts new values to a set.
+func (s *Set) Add(values ...int) *Set {
+	for _, v := range values {
+		s.set[v] = struct{}{}
+	}
 	return s
 }
 
@@ -130,9 +136,8 @@ func (s *Set) Intersection(other *Set) *Set {
 
 // Union updates set with the union of itself and another.
 func (s *Set) Union(other *Set) *Set {
-	for i := range other.set {
-		s.Add(i)
-	}
+	slice := other.ToSlice()
+	s.Add(slice...)
 	return s
 }
 

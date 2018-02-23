@@ -78,7 +78,8 @@ func TestSet_Clear(t *testing.T) {
 		set := v.set
 		want := make(map[int]struct{})
 		s := New(set...)
-		get := s.Clear().set
+		s.Clear()
+		get := s.set
 		if !reflect.DeepEqual(get, want) {
 			t.Errorf("New(%v).Clear().set == %v, want %v", set, get, want)
 		}
