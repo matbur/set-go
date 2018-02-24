@@ -10,5 +10,4 @@ jobs:
       - checkout
       - run: go get -v -t -d ./...
       - run: go test -v ./...
-      - run: echo "$SOME_VAR"
-      - run: "$SOME_CMD"
+      - run: $(go env GOPATH | awk 'BEGIN{FS=":"} {print $1}')/bin/goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN
