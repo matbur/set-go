@@ -10,4 +10,6 @@ jobs:
       - checkout
       - run: go get -v -t -d ./...
       - run: go test -v ./...
+      - run: go get -v golang.org/x/tools/cmd/cover
+      - run: go get -v github.com/mattn/goveralls
       - run: $(go env GOPATH | awk 'BEGIN{FS=":"} {print $1}')/bin/goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN
