@@ -15,6 +15,7 @@ var ErrValueNotFound = errors.New("no such value in set")
 // ErrEmptySet is returned during trying pop from empty set.
 var ErrEmptySet = errors.New("the map is empty")
 
+// Set is wrapper for map with int as key.
 type Set struct {
 	set map[int]struct{}
 }
