@@ -1,9 +1,9 @@
 package set
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
-	"fmt"
 )
 
 func TestNew(t *testing.T) {
