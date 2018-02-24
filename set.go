@@ -9,10 +9,11 @@ import (
 	"strings"
 )
 
-var (
-	ErrValueNotFound = errors.New("no such value in set")
-	ErrEmptySet      = errors.New("the map is empty")
-)
+// ErrValueNotFound is returned when set does not contain given value.
+var ErrValueNotFound = errors.New("no such value in set")
+
+// ErrEmptySet is returned during trying pop from empty set.
+var ErrEmptySet = errors.New("the map is empty")
 
 type Set struct {
 	set map[int]struct{}
