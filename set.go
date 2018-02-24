@@ -16,21 +16,18 @@ var ErrValueNotFound = errors.New("no such value in set")
 var ErrEmptySet = errors.New("the map is empty")
 
 // Set is wrapper for map with int as key.
-type Set struct {
-	set map[int]struct{}
-}
+type Set map[int]struct{}
 
 // New builds a new set.
 func New(values ...int) *Set {
-	set := make(map[int]struct{})
-	s := Set{set}
+	s := make(Set)
 	s.Add(values...)
 	return &s
 }
 
 // Len gets number of items in set.
 func (s *Set) Len() int {
-	i := len(s.set)
+	i := len(*s)
 	return i
 }
 
@@ -55,14 +52,14 @@ func (s *Set) Copy() *Set {
 
 // Equal checks if two sets contain the same elements.
 func (s *Set) Equal(other *Set) bool {
-	isEqual := reflect.DeepEqual(s.set, other.set)
+	isEqual := reflect.DeepEqual(s, other)
 	return isEqual
 }
 
 // ToSlice converts set to a slice of ints.
 func (s *Set) ToSlice() []int {
 	tabInt := make([]int, 0, s.Len())
-	for i := range s.set {
+	for i := range *s {
 		tabInt = append(tabInt, i)
 	}
 	return tabInt
@@ -84,14 +81,14 @@ func (s *Set) String() string {
 // Add inserts new values to a set.
 func (s *Set) Add(values ...int) *Set {
 	for _, v := range values {
-		s.set[v] = struct{}{}
+		(*s)[v] = struct{}{}
 	}
 	return s
 }
 
 // IsIn checks if set contains value.
 func (s *Set) IsIn(value int) bool {
-	_, ok := s.set[value]
+	_, ok := (*s)[value]
 	return ok
 }
 
@@ -100,7 +97,7 @@ func (s *Set) Remove(value int) error {
 	if !s.IsIn(value) {
 		return ErrValueNotFound
 	}
-	delete(s.set, value)
+	delete(*s, value)
 	return nil
 }
 
@@ -110,7 +107,7 @@ func (s *Set) Pop() (int, error) {
 		return 0, ErrEmptySet
 	}
 	var value int
-	for i := range s.set {
+	for i := range *s {
 		value = i
 		break
 	}
@@ -120,7 +117,7 @@ func (s *Set) Pop() (int, error) {
 
 // Difference removes all elements of another set from this set.
 func (s *Set) Difference(other *Set) *Set {
-	for i := range other.set {
+	for i := range *other {
 		s.Remove(i)
 	}
 	return s
@@ -128,7 +125,7 @@ func (s *Set) Difference(other *Set) *Set {
 
 // Intersection updates set with the intersection of itself and another.
 func (s *Set) Intersection(other *Set) *Set {
-	for i := range s.set {
+	for i := range *s {
 		if !other.IsIn(i) {
 			s.Remove(i)
 		}
