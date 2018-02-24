@@ -37,7 +37,7 @@ func TestNew(t *testing.T) {
 			New(-7),
 		}, {
 			"two values in three elements",
-			args{[]int{-1, 2 ,-1}},
+			args{[]int{-1, 2, -1}},
 			New(2, -1),
 		},
 	}
@@ -136,43 +136,37 @@ func TestSet_Clear(t *testing.T) {
 	tests := []struct {
 		name string
 		s    *Set
-		want *Set
 	}{
 		{
 			"no values",
 			New(),
-			New(),
 		}, {
 			"one value",
 			New(3),
-			New(),
 		}, {
 			"two unique values",
 			New(1, -2),
-			New(),
 		}, {
 			"three unique values",
 			New(0, 3, 2),
-			New(),
 		}, {
 			"one value two times",
 			New(-7, -7),
-			New(),
 		}, {
 			"two values in three elements",
 			New(-1, 2, -1),
-			New(),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			want := New()
 			got := tt.s.Clear()
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Set.Clear() = %v, want %v", got, tt.want)
+			if !reflect.DeepEqual(got, want) {
+				t.Errorf("Set.Clear() = %v, want %v", got, want)
 			}
 			got = tt.s
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Set.Clear(); Set = %v, want %v", got, tt.want)
+			if !reflect.DeepEqual(got, want) {
+				t.Errorf("Set.Clear(); Set = %v, want %v", got, want)
 			}
 		})
 	}
@@ -195,11 +189,11 @@ func TestSet_Copy(t *testing.T) {
 		}, {
 			"two unique values",
 			New(1, -2),
-			New(1, -2),
+			New(-2, 1),
 		}, {
 			"three unique values",
 			New(0, 3, 2),
-			New(0, 3, 2),
+			New(2, 0, 3),
 		}, {
 			"one value two times",
 			New(-7, -7),
@@ -261,17 +255,17 @@ func TestSet_Equal(t *testing.T) {
 		}, {
 			"two values in three elements",
 			New(2, -1),
-			args{New(-1, 2 ,-1)},
+			args{New(-1, 2, -1)},
 			true,
 		}, {
 			"no values with one value",
-			New(2, -1),
+			New(2),
 			args{New()},
 			false,
 		}, {
 			"one value with two values",
-			New(2),
-			args{New(-1, 2)},
+			New(-1, 2),
+			args{New(2)},
 			false,
 		},
 	}
@@ -288,14 +282,34 @@ func TestSet_ToSlice(t *testing.T) {
 	tests := []struct {
 		name string
 		s    *Set
-		want []int
+		want [][]int
 	}{
-	// TODO: Add test cases.
+		{
+			"no values",
+			New(),
+			[][]int{{}},
+		}, {
+			"one value",
+			New(1),
+			[][]int{{1}},
+		}, {
+			"two values",
+			New(3, 5),
+			[][]int{{3, 5}, {5, 3}},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.s.ToSlice(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Set.ToSlice() = %v, want %v", got, tt.want)
+			got := tt.s.ToSlice()
+			flag := false
+			for _, want := range tt.want {
+				if reflect.DeepEqual(got, want) {
+					flag = true
+					break
+				}
+			}
+			if !flag {
+				t.Errorf("Set.ToSlice() = %v, want one of %v", got, tt.want)
 			}
 		})
 	}
@@ -307,7 +321,31 @@ func TestSet_String(t *testing.T) {
 		s    *Set
 		want string
 	}{
-	// TODO: Add test cases.
+		{
+			"no values",
+			New(),
+			"{}",
+		}, {
+			"one value",
+			New(3),
+			"{3}",
+		}, {
+			"two unique values",
+			New(1, -2),
+			"{-2, 1}",
+		}, {
+			"three unique values",
+			New(0, 3, 2),
+			"{0, 2, 3}",
+		}, {
+			"one value two times",
+			New(-7, -7),
+			"{-7}",
+		}, {
+			"two values in three elements",
+			New(-1, 2, -1),
+			"{-1, 2}",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -328,7 +366,37 @@ func TestSet_Add(t *testing.T) {
 		args args
 		want *Set
 	}{
-	// TODO: Add test cases.
+		{
+			"no value to no value",
+			New(),
+			args{[]int{}},
+			New(),
+		}, {
+			"one value to no value",
+			New(),
+			args{[]int{7}},
+			New(7),
+		}, {
+			"one value to one value",
+			New(7),
+			args{[]int{-3}},
+			New(7, -3),
+		}, {
+			"two values to no value",
+			New(),
+			args{[]int{3, 5}},
+			New(3, 5),
+		}, {
+			"one value to the same value",
+			New(4),
+			args{[]int{4}},
+			New(4),
+		}, {
+			"two values to two values",
+			New(3, 4),
+			args{[]int{4, 5}},
+			New(3, 4, 5),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -349,7 +417,32 @@ func TestSet_IsIn(t *testing.T) {
 		args args
 		want bool
 	}{
-	// TODO: Add test cases.
+		{
+			"value to no value",
+			New(),
+			args{4},
+			false,
+		}, {
+			"value to one value",
+			New(4),
+			args{5},
+			false,
+		}, {
+			"value to the same value",
+			New(8),
+			args{8},
+			true,
+		}, {
+			"value to two values",
+			New(3, 4),
+			args{7},
+			false,
+		}, {
+			"one of value to two values",
+			New(9, 2),
+			args{2},
+			true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -370,7 +463,32 @@ func TestSet_Remove(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-	// TODO: Add test cases.
+		{
+			"value to no value",
+			New(),
+			args{4},
+			true,
+		}, {
+			"value to one value",
+			New(4),
+			args{5},
+			true,
+		}, {
+			"value to the same value",
+			New(8),
+			args{8},
+			false,
+		}, {
+			"value to two values",
+			New(3, 4),
+			args{7},
+			true,
+		}, {
+			"one of value to two values",
+			New(9, 2),
+			args{2},
+			false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -385,10 +503,30 @@ func TestSet_Pop(t *testing.T) {
 	tests := []struct {
 		name    string
 		s       *Set
-		want    int
+		want    []int
 		wantErr bool
 	}{
-	// TODO: Add test cases.
+		{
+			"no values",
+			New(),
+			[]int{},
+			true,
+		}, {
+			"one value",
+			New(-4),
+			[]int{-4},
+			false,
+		}, {
+			"two values",
+			New(-3, 3),
+			[]int{-3, 3},
+			false,
+		}, {
+			"three values",
+			New(4, 2, 0),
+			[]int{0, 2, 4},
+			false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -397,8 +535,15 @@ func TestSet_Pop(t *testing.T) {
 				t.Errorf("Set.Pop() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if got != tt.want {
-				t.Errorf("Set.Pop() = %v, want %v", got, tt.want)
+			flag := false
+			for _, want := range tt.want {
+				if got == want {
+					flag = true
+					break
+				}
+			}
+			if !flag && !tt.wantErr {
+				t.Errorf("Set.Pop() = %v, want one of %v", got, tt.want)
 			}
 		})
 	}
