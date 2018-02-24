@@ -211,7 +211,7 @@ func TestSet_Copy(t *testing.T) {
 				t.Errorf("Set.Copy() = %v, want %v", got, tt.want)
 			}
 			if fmt.Sprintf("%p", tt.s) == fmt.Sprintf("%p", got) {
-				t.Errorf("s1 = %v; s2 = s1.Copy(); s1 and s2 is the same object", tt.s)
+				t.Errorf("s2 = s1.Copy(); s1 and s2 is the same object")
 			}
 		})
 	}
@@ -228,22 +228,22 @@ func TestSet_Equal(t *testing.T) {
 		want bool
 	}{
 		{
-			"no values",
+			"no values with no values",
 			New(),
 			args{New()},
 			true,
 		}, {
-			"one value",
+			"one value with one value",
 			New(3),
 			args{New(3)},
 			true,
 		}, {
-			"two unique values",
+			"two unique values with the same values",
 			New(1, -2),
 			args{New(-2, 1)},
 			true,
 		}, {
-			"three unique values",
+			"three unique values with the same values",
 			New(0, 3, 2),
 			args{New(2, 3, 0)},
 			true,
@@ -301,14 +301,14 @@ func TestSet_ToSlice(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := tt.s.ToSlice()
-			flag := false
+			errFlag := true
 			for _, want := range tt.want {
 				if reflect.DeepEqual(got, want) {
-					flag = true
+					errFlag = false
 					break
 				}
 			}
-			if !flag {
+			if errFlag {
 				t.Errorf("Set.ToSlice() = %v, want one of %v", got, tt.want)
 			}
 		})
@@ -418,27 +418,27 @@ func TestSet_IsIn(t *testing.T) {
 		want bool
 	}{
 		{
-			"value to no value",
+			"value in no values",
 			New(),
 			args{4},
 			false,
 		}, {
-			"value to one value",
+			"value in one value",
 			New(4),
 			args{5},
 			false,
 		}, {
-			"value to the same value",
+			"value in the same value",
 			New(8),
 			args{8},
 			true,
 		}, {
-			"value to two values",
+			"value in two values",
 			New(3, 4),
 			args{7},
 			false,
 		}, {
-			"one of value to two values",
+			"one of values in two values",
 			New(9, 2),
 			args{2},
 			true,
@@ -464,27 +464,27 @@ func TestSet_Remove(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			"value to no value",
+			"value from no values",
 			New(),
 			args{4},
 			true,
 		}, {
-			"value to one value",
+			"value from one value",
 			New(4),
 			args{5},
 			true,
 		}, {
-			"value to the same value",
+			"value from the same value",
 			New(8),
 			args{8},
 			false,
 		}, {
-			"value to two values",
+			"value from two values",
 			New(3, 4),
 			args{7},
 			true,
 		}, {
-			"one of value to two values",
+			"one of values from two values",
 			New(9, 2),
 			args{2},
 			false,
@@ -559,7 +559,47 @@ func TestSet_Difference(t *testing.T) {
 		args args
 		want *Set
 	}{
-	// TODO: Add test cases.
+		{
+			"no values with no values",
+			New(),
+			args{New()},
+			New(),
+		}, {
+			"one value with one value",
+			New(3),
+			args{New(3)},
+			New(),
+		}, {
+			"two unique values with the same values",
+			New(1, -2),
+			args{New(-2, 1)},
+			New(),
+		}, {
+			"three unique values with the same values",
+			New(0, 3, 2),
+			args{New(2, 3, 0)},
+			New(),
+		}, {
+			"one value with two values",
+			New(-7),
+			args{New(-7, -5)},
+			New(),
+		}, {
+			"two values in three elements",
+			New(2, -1),
+			args{New(-1, 2, -1)},
+			New(),
+		}, {
+			"no values with one value",
+			New(2),
+			args{New()},
+			New(2),
+		}, {
+			"one value with two values",
+			New(-1, 2),
+			args{New(2)},
+			New(-1),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -580,7 +620,47 @@ func TestSet_Intersection(t *testing.T) {
 		args args
 		want *Set
 	}{
-	// TODO: Add test cases.
+		{
+			"no values with no values",
+			New(),
+			args{New()},
+			New(),
+		}, {
+			"one value with one value",
+			New(3),
+			args{New(3)},
+			New(3),
+		}, {
+			"two unique values with two values",
+			New(1, -2),
+			args{New(2, 1)},
+			New(1),
+		}, {
+			"three unique values with the same values",
+			New(0, 3, 2),
+			args{New(2, 3, 0)},
+			New(0, 3, 2),
+		}, {
+			"one value with two values",
+			New(-7),
+			args{New(-7, -5)},
+			New(-7),
+		}, {
+			"two values in three elements",
+			New(2, -1),
+			args{New(-1, 2, -1)},
+			New(-1, 2),
+		}, {
+			"no values with one value",
+			New(2),
+			args{New()},
+			New(),
+		}, {
+			"one value with two values",
+			New(-1, 2),
+			args{New(2)},
+			New(2),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -601,7 +681,47 @@ func TestSet_Union(t *testing.T) {
 		args args
 		want *Set
 	}{
-	// TODO: Add test cases.
+		{
+			"no values with no values",
+			New(),
+			args{New()},
+			New(),
+		}, {
+			"one value with one value",
+			New(3),
+			args{New(3)},
+			New(3),
+		}, {
+			"two unique values with two values",
+			New(1, -2),
+			args{New(2, 1)},
+			New(1, -2, 2),
+		}, {
+			"three unique values with the same values",
+			New(0, 3, 2),
+			args{New(2, 3, 0)},
+			New(0, 3, 2),
+		}, {
+			"one value with two values",
+			New(-7),
+			args{New(-7, -5)},
+			New(-5, -7),
+		}, {
+			"two values in three elements",
+			New(2, -1),
+			args{New(-1, 2, -1)},
+			New(-1, 2),
+		}, {
+			"no values with one value",
+			New(2),
+			args{New()},
+			New(2),
+		}, {
+			"one value with two values",
+			New(-1, 2),
+			args{New(2)},
+			New(-1, 2),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -622,7 +742,47 @@ func TestSet_SymmetricDifference(t *testing.T) {
 		args args
 		want *Set
 	}{
-	// TODO: Add test cases.
+		{
+			"no values with no values",
+			New(),
+			args{New()},
+			New(),
+		}, {
+			"one value with one value",
+			New(3),
+			args{New(3)},
+			New(),
+		}, {
+			"two unique values with two values",
+			New(1, -2),
+			args{New(2, 1)},
+			New(-2, 2),
+		}, {
+			"three unique values with the same values",
+			New(0, 3, 2),
+			args{New(2, 3, 0)},
+			New(),
+		}, {
+			"one value with two values",
+			New(-7),
+			args{New(-7, -5)},
+			New(-5),
+		}, {
+			"two values in three elements",
+			New(2, -1),
+			args{New(-1, 2, -1)},
+			New(),
+		}, {
+			"no values with one value",
+			New(2),
+			args{New()},
+			New(2),
+		}, {
+			"one value with two values",
+			New(-1, 2),
+			args{New(2)},
+			New(-1),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -643,7 +803,52 @@ func TestSet_IsDisjoint(t *testing.T) {
 		args args
 		want bool
 	}{
-	// TODO: Add test cases.
+		{
+			"no values with no values",
+			New(),
+			args{New()},
+			true,
+		}, {
+			"one value with one value",
+			New(3),
+			args{New(4)},
+			true,
+		}, {
+			"one value with the same value",
+			New(3),
+			args{New(3)},
+			false,
+		}, {
+			"two unique values with the same values",
+			New(1, -2),
+			args{New(-2, 1)},
+			false,
+		}, {
+			"three unique values with the same values",
+			New(0, 3, 2),
+			args{New(2, 3, 0)},
+			false,
+		}, {
+			"one value two times with one value",
+			New(-8),
+			args{New(-7, -6)},
+			true,
+		}, {
+			"one value with no values",
+			New(2),
+			args{New()},
+			true,
+		}, {
+			"no values with one value",
+			New(),
+			args{New(2)},
+			true,
+		}, {
+			"one value with two values",
+			New(-1, 2),
+			args{New(2)},
+			false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -664,7 +869,47 @@ func TestSet_IsSubset(t *testing.T) {
 		args args
 		want bool
 	}{
-	// TODO: Add test cases.
+		{
+			"no values with no values",
+			New(),
+			args{New()},
+			true,
+		}, {
+			"one value with one value",
+			New(3),
+			args{New(3)},
+			true,
+		}, {
+			"two unique values with the same values",
+			New(1, -2),
+			args{New(-2, 1)},
+			true,
+		}, {
+			"three unique values with the same values",
+			New(0, 3, 2),
+			args{New(2, 3, 0)},
+			true,
+		}, {
+			"one value two times with one value",
+			New(-7),
+			args{New(-7, -7)},
+			true,
+		}, {
+			"two values in three elements",
+			New(2, -1),
+			args{New(-1, 2, -1)},
+			true,
+		}, {
+			"no values with one value",
+			New(2),
+			args{New()},
+			false,
+		}, {
+			"one value with two values",
+			New(-1, 2),
+			args{New(2)},
+			false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -685,7 +930,47 @@ func TestSet_IsSuperset(t *testing.T) {
 		args args
 		want bool
 	}{
-	// TODO: Add test cases.
+		{
+			"no values with no values",
+			New(),
+			args{New()},
+			true,
+		}, {
+			"one value with one value",
+			New(3),
+			args{New(3)},
+			true,
+		}, {
+			"two unique values with the same values",
+			New(1, -2),
+			args{New(-2, 1)},
+			true,
+		}, {
+			"three unique values with the same values",
+			New(0, 3, 2),
+			args{New(2, 3, 0)},
+			true,
+		}, {
+			"one value two times with one value",
+			New(-7),
+			args{New(-7, -7)},
+			true,
+		}, {
+			"two values in three elements",
+			New(2, -1),
+			args{New(-1, 2, -1)},
+			true,
+		}, {
+			"no values with one value",
+			New(2),
+			args{New()},
+			true,
+		}, {
+			"one value with two values",
+			New(-1, 2),
+			args{New(2)},
+			true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
